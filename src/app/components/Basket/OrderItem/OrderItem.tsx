@@ -1,6 +1,6 @@
-import {ProductItem} from "@/app/page";
 import styles from "./OrderItem.module.scss";
 import {OrderItemData} from "@/app/components/Basket/Basket";
+import {ProductItem} from "@/api/types";
 
 interface OrderItemProps {
     productItem: ProductItem;

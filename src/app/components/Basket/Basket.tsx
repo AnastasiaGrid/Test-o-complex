@@ -2,9 +2,9 @@ import styles from './Basket.module.scss'
 import {Button} from "@/app/components/Button/Button";
 import {OrderItem} from "@/app/components/Basket/OrderItem/OrderItem";
 import {InputMask} from "@react-input/mask";
-import {ProductItem} from "@/app/page";
 import {ID} from "@/app/components/Products/ProductsItem/ProductsItem";
-import {useState} from "react";
+import {postOrderApi} from "@/api/api";
+import {ProductItem} from "@/api/types";
 
 const BASKET_TEXT = {
     TITLE: 'Добавленные товары',
@@ -28,15 +28,8 @@ type BasketProps = {
     onChangePhone: (value: string) => void,
 }
 export const Basket = ({order, onChangePhone, products}: BasketProps) => {
-    const [isModalOpen, setModalOpen] = useState(false);
     const handleOrderClick = () => {
-        fetch('http://o-complex.com:1337/order', {
-            method: "POST",
-            body: JSON.stringify({...order, phone: order.phone.replace(/[^0-9]/g, '')}),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
+        postOrderApi(order)
             .then(res => {
                 if (res.status === 422) {
                     alert('Введите номер телефона полностью')
@@ -66,12 +59,12 @@ export const Basket = ({order, onChangePhone, products}: BasketProps) => {
                 {BASKET_TEXT.TITLE}
             </h2>
             <ul className={styles.orderItems}>
-                {orderList.map((item) =>
+                {orderList?.map((item) =>
                     <OrderItem key={item.id} orderItem={item.orderItem} productItem={item.productItem}/>)}
             </ul>
             <div className={styles.total}>
                 <p> Сумма заказа </p>
-                <p>{orderList.reduce((acc, cur) => (acc + (cur?.productItem?.price * cur?.orderItem?.quantity)), 0)} ₽
+                <p>{orderList?.reduce((acc, cur) => (acc + (cur?.productItem?.price * cur?.orderItem?.quantity)), 0)} ₽
                 </p>
             </div>
 

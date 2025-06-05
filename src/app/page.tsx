@@ -2,70 +2,27 @@
 import styles from "./page.module.scss";
 import {ReviewCard} from "@/app/components/ReviewCard/ReviewCard";
 import {Basket, Order} from "@/app/components/Basket/Basket";
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {ID} from "@/app/components/Products/ProductsItem/ProductsItem";
 import {Preloader} from "@/app/components/Preloader/Preloader";
 import {Products} from "@/app/components/Products/Products";
+import {getProductsApi, getReviewsApi} from "@/api/api";
+import {initialProductsData, PAGE_SIZE} from "@/app/constants";
+import {getOrderFromLocalStorage} from "@/utils/utils";
+import {ProductsData, ReviewCardData} from "@/api/types";
 
-type ReviewCardData = {
-    id: number;
-    text: string;
-}
-
-export type ProductsInOrder = {
-    id: number,
-    quantity: number,
-    title: string,
-    price: number,
-}
-
-export type ProductItem = {
-    description: string,
-    id: number,
-    image_url: string,
-    price: number,
-    title: string,
-}
-
-export interface ProductsData {
-    amount: number;
-    items: ProductItem[]
-    page: number;
-    total: number;
-}
-
-const PAGE_SIZE = 10
-
-const queryProducts = (page: number, size: number): Promise<ProductsData> => fetch(`http://o-complex.com:1337/products?page=${page}&page_size=${size}`, {
-    method: "GET",
-    headers: {
-
-        'Content-Type': 'application/json',
-    },
-})
-    .then(res => res.json())
-
-export function getOrderFromLocalStorage(): Order {
-    try {
-        return JSON.parse(localStorage.getItem('order') || '');
-    } catch {
-        return {phone: '', cart: []};
-    }
-}
 
 export default function Home() {
     const [reviewCards, setReviewCards] = useState<ReviewCardData[]>([]);
-    const [products, setProducts] = useState<ProductsData>({items: [], page: 1, total: 0, amount: 0});
+    const [products, setProducts] = useState<ProductsData>(initialProductsData);
     const [order, setOrder] = useState<Order>(getOrderFromLocalStorage());
-    const [page, setPage] = useState(1);
     const [productsLoading, setProductsLoading] = useState(false);
-    const [canLoad, setCanLoad] = useState(false);
 
 
     const getProducts = async (page: number) => {
         try {
             setProductsLoading(true);
-            const data = await queryProducts(page, PAGE_SIZE)
+            const data = await getProductsApi(page, PAGE_SIZE)
             if (data) {
                 setProducts(prev => ({...data, items: [...prev.items, ...data.items]}))
             }
@@ -76,24 +33,11 @@ export default function Home() {
         }
     }
 
-    useEffect(() => {
-        void getProducts(page)
-    }, [page]);
 
     useEffect(() => {
-
-
-        fetch('http://o-complex.com:1337/reviews', {
-            method: "GET",
-            headers: {
-
-                'Content-Type': 'application/json',
-            },
+        getReviewsApi().then((data: ReviewCardData[]) => {
+            setReviewCards(data)
         })
-            .then(res => res.json())
-            .then((data: ReviewCardData[]) => {
-                setReviewCards(data)
-            })
             .catch(err => console.log(err));
 
     }, []);
@@ -145,33 +89,6 @@ export default function Home() {
 
     }
 
-    useEffect(() => {
-        if (canLoad && !productsLoading && page <= products.total) {
-            setPage(prev => {
-                if (products.total === page) return prev
-                return prev + 1
-            })
-        }
-    }, [canLoad, page, products.total, productsLoading]);
-
-    const scrollHandler = useCallback((e: Event): void => {
-        const target = e.target as Document
-
-        if (target.documentElement.scrollHeight - target.documentElement.scrollTop - window.innerHeight < 50) {
-            setCanLoad(true)
-        } else {
-            setCanLoad(false)
-        }
-    }, [])
-
-    useEffect(() => {
-        document.addEventListener('scroll', (e) => scrollHandler(e))
-
-        return () => {
-            document.removeEventListener('scroll', scrollHandler)
-        }
-    }, [scrollHandler])
-
 
     return (
         <div className={styles.page}>
@@ -183,7 +100,8 @@ export default function Home() {
             <><Basket onChangePhone={onChangePhone} order={order}
                       products={products.items}/>
                 <Products products={products} onChangeOrderItem={onChangeOrderItem} onAddOrderItem={onAddOrderItem}
-                          onDeleteOrderItem={onDeleteOrderItem} order={order}/>
+                          onDeleteOrderItem={onDeleteOrderItem} order={order} productsLoading={productsLoading}
+                          getProducts={getProducts}/>
             </>
 
             {productsLoading && <Preloader/>}

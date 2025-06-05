@@ -5,9 +5,6 @@
   background-color: #D9D9D9;
   border-radius: 15px;
   padding: 10px 20px;
-  //display: flex;
-  //flex-direction: column;
-  //justify-content: space-between;
 
   @media(max-width: 768px) {
     width: 100%;
@@ -52,4 +49,13 @@
     outline: none;
   }
 
+}
+
+.total {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 18px;
+  padding-block-end: 20px;
 }

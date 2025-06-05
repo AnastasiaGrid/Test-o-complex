@@ -1,6 +1,7 @@
 .orderItem {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  //flex-direction: row;
+  grid-template-columns: 1fr 50px 100px;
   gap: 10px;
   font-size: 16px;
   justify-content: space-between;
@@ -8,11 +9,13 @@
 
 .quantity {
   font-weight: 600;
+  justify-self: flex-end;
 }
 
 .price {
   font-size: 18px;
   font-weight: 600;
+  justify-self: flex-end;
 
 
 }

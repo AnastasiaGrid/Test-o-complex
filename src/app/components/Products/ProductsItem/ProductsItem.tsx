@@ -1,4 +1,4 @@
-import styles from "@/app/components/ProductsItem/ProductsItem.module.scss";
+import styles from "@/app/components/Products/ProductsItem/ProductsItem.module.scss";
 import {Button} from "@/app/components/Button/Button";
 import {OrderItemData} from "@/app/components/Basket/Basket";
 

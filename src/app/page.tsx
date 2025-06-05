@@ -1,10 +1,11 @@
 'use client'
 import styles from "./page.module.scss";
 import {ReviewCard} from "@/app/components/ReviewCard/ReviewCard";
-import {Basket, Order, OrderItemData} from "@/app/components/Basket/Basket";
+import {Basket, Order} from "@/app/components/Basket/Basket";
 import {useCallback, useEffect, useState} from "react";
-import {ID, ProductsItem} from "@/app/components/ProductsItem/ProductsItem";
+import {ID} from "@/app/components/Products/ProductsItem/ProductsItem";
 import {Preloader} from "@/app/components/Preloader/Preloader";
+import {Products} from "@/app/components/Products/Products";
 
 type ReviewCardData = {
     id: number;
@@ -18,7 +19,7 @@ export type ProductsInOrder = {
     price: number,
 }
 
-export type ProductsItem = {
+export type ProductItem = {
     description: string,
     id: number,
     image_url: string,
@@ -26,9 +27,9 @@ export type ProductsItem = {
     title: string,
 }
 
-interface ProductsData {
+export interface ProductsData {
     amount: number;
-    items: ProductsItem[]
+    items: ProductItem[]
     page: number;
     total: number;
 }
@@ -44,11 +45,18 @@ const queryProducts = (page: number, size: number): Promise<ProductsData> => fet
 })
     .then(res => res.json())
 
+export function getOrderFromLocalStorage(): Order {
+    try {
+        return JSON.parse(localStorage.getItem('order') || '');
+    } catch {
+        return {phone: '', cart: []};
+    }
+}
 
 export default function Home() {
     const [reviewCards, setReviewCards] = useState<ReviewCardData[]>([]);
     const [products, setProducts] = useState<ProductsData>({items: [], page: 1, total: 0, amount: 0});
-    const [order, setOrder] = useState<Order>({phone: '', cart: []});
+    const [order, setOrder] = useState<Order>(getOrderFromLocalStorage());
     const [page, setPage] = useState(1);
     const [productsLoading, setProductsLoading] = useState(false);
     const [canLoad, setCanLoad] = useState(false);
@@ -90,33 +98,42 @@ export default function Home() {
 
     }, []);
 
-    const orderMapping = order.cart.reduce<Record<number, OrderItemData>>((acc, cur) => ({...acc, [cur.id]: cur}), {})
-
     const onChangeOrderItem = (id: ID, quantity: number) => {
         setOrder(prev => {
             const newCart = prev.cart.map(item => {
                 if (item.id === id) {
                     return {...item, quantity}
                 }
-
                 return item
             })
+            if (quantity === 0) {
+                localStorage.setItem('order', JSON.stringify({
+                    ...prev,
+                    cart: prev.cart.filter(item => item.id !== id)
+                }));
+                return {...prev, cart: prev.cart.filter(item => item.id !== id)}
+            }
+            localStorage.setItem('order', JSON.stringify({...prev, cart: newCart}));
             return {...prev, cart: newCart}
         })
+
     }
 
     const onAddOrderItem = (id: ID) => {
         setOrder(prev => {
-
+            localStorage.setItem('order', JSON.stringify({...prev, cart: [...prev.cart, {id, quantity: 1}]}));
             return {...prev, cart: [...prev.cart, {id, quantity: 1}]}
         })
+
+
     }
 
     const onDeleteOrderItem = (id: ID) => {
         setOrder(prev => {
-
+            localStorage.setItem('order', JSON.stringify({...prev, cart: prev.cart.filter(item => item.id !== id)}));
             return {...prev, cart: prev.cart.filter(item => item.id !== id)}
         })
+
     }
 
     const onChangePhone = (value: string) => {
@@ -124,10 +141,11 @@ export default function Home() {
 
             return {...prev, phone: value}
         })
+        localStorage.setItem('order', JSON.stringify(order));
+
     }
 
     useEffect(() => {
-        console.log(page, products.total)
         if (canLoad && !productsLoading && page <= products.total) {
             setPage(prev => {
                 if (products.total === page) return prev
@@ -164,14 +182,8 @@ export default function Home() {
             </ul>)}
             <><Basket onChangePhone={onChangePhone} order={order}
                       products={products.items}/>
-                <ul className={styles.products}>
-                    {products.items.map((product: ProductsItem) => <ProductsItem product={product} key={product.id}
-                                                                                 onChangeOrderItem={onChangeOrderItem}
-                                                                                 onAddOrderItem={onAddOrderItem}
-                                                                                 onDeleteOrderItem={onDeleteOrderItem}
-                                                                                 orderItem={orderMapping[product.id]}/>
-                    )}
-                </ul>
+                <Products products={products} onChangeOrderItem={onChangeOrderItem} onAddOrderItem={onAddOrderItem}
+                          onDeleteOrderItem={onDeleteOrderItem} order={order}/>
             </>
 
             {productsLoading && <Preloader/>}

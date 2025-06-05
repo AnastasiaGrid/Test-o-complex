@@ -3,7 +3,7 @@ import {Button} from "@/app/components/Button/Button";
 import {OrderItem} from "@/app/components/Basket/OrderItem/OrderItem";
 import {InputMask} from "@react-input/mask";
 import {postOrderApi} from "@/api/api";
-import {ID, OrderItemData, ProductItem} from "@/api/types";
+import {ID, OrderItemData, ProductItemData} from "@/api/types";
 import {BasketProps} from "@/app/components/Basket/types";
 import {BASKET_TEXT} from "@/app/components/Basket/constants";
 
@@ -26,7 +26,7 @@ export const Basket = ({order, onChangePhone, products, onOrderClick}: BasketPro
             });
     }
 
-    const productsMapping = products.reduce<Record<ID, ProductItem>>((acc, cur) => ({...acc, [cur.id]: cur}), {})
+    const productsMapping = products.reduce<Record<ID, ProductItemData>>((acc, cur) => ({...acc, [cur.id]: cur}), {})
 
     const orderList = order?.cart?.map((orderItem: OrderItemData) => ({
         id: orderItem.id,

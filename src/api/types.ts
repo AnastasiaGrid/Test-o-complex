@@ -4,7 +4,7 @@ export type ReviewCardData = {
 }
 export type ID = number
 
-export type ProductItem = {
+export type ProductItemData = {
     description: string,
     id: number,
     image_url: string,
@@ -14,7 +14,7 @@ export type ProductItem = {
 
 export interface ProductsData {
     amount: number;
-    items: ProductItem[]
+    items: ProductItemData[]
     page: number;
     total: number;
 }

@@ -1,5 +1,5 @@
 import {Order, ProductsData} from "@/api/types";
-import {ID} from "@/app/components/Products/ProductsItem/ProductsItem";
+import {ID} from "@/app/components/Products/ProductItem/ProductItem";
 
 export interface ProductsProps {
     products: ProductsData;

@@ -1,8 +1,8 @@
-import {Order, OrderItemData, ProductItem} from "@/api/types";
+import {Order, OrderItemData, ProductItemData} from "@/api/types";
 
 export type BasketProps = {
     order: Order,
-    products: ProductItem[];
+    products: ProductItemData[];
     onChangePhone: (value: string) => void,
     onOrderClick: (order: Order) => void,
 }
@@ -10,5 +10,5 @@ export type BasketProps = {
 export type OrderList = {
     id: number,
     orderItem: OrderItemData,
-    productItem: ProductItem
+    productItem: ProductItemData
 }[]

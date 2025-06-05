@@ -1,8 +1,8 @@
 import styles from "@/app/page.module.scss";
 import {useCallback, useEffect, useState} from "react";
-import {OrderItemData, ProductItem,} from "@/api/types";
+import {OrderItemData, ProductItemData,} from "@/api/types";
 import {ProductsProps} from "@/app/components/Products/types";
-import {ProductsItem} from "@/app/components/Products/ProductsItem/ProductsItem";
+import {ProductItem} from "@/app/components/Products/ProductItem/ProductItem";
 
 export const Products = ({
                              products,
@@ -48,11 +48,11 @@ export const Products = ({
     }, [scrollHandler])
     return (
         <ul className={styles.products}>
-            {products.items.map((product: ProductItem, index: number) => <ProductsItem product={product} key={index}
-                                                                                       onChangeOrderItem={onChangeOrderItem}
-                                                                                       onAddOrderItem={onAddOrderItem}
-                                                                                       onDeleteOrderItem={onDeleteOrderItem}
-                                                                                       orderItem={orderMapping[product.id]}/>
+            {products.items.map((product: ProductItemData, index: number) => <ProductItem product={product} key={index}
+                                                                                          onChangeOrderItem={onChangeOrderItem}
+                                                                                          onAddOrderItem={onAddOrderItem}
+                                                                                          onDeleteOrderItem={onDeleteOrderItem}
+                                                                                          orderItem={orderMapping[product.id]}/>
             )}
         </ul>
     )

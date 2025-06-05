@@ -1,19 +1,18 @@
-import styles from "@/app/components/Products/ProductsItem/ProductsItem.module.scss";
+import styles from "@/app/components/Products/ProductItem/ProductItem.module.scss";
 import {Button} from "@/app/components/Button/Button";
-import {ProductsItemProps} from "@/app/components/Products/ProductsItem/types";
-import {ID} from "@/api/types";
+import {ProductsItemProps} from "@/app/components/Products/ProductItem/types";
 
 
-export const ProductsItem = ({
-                                 product,
-                                 orderItem,
-                                 onAddOrderItem,
-                                 onChangeOrderItem,
-                                 onDeleteOrderItem
-                             }: ProductsItemProps) => {
+export const ProductItem = ({
+                                product,
+                                orderItem,
+                                onAddOrderItem,
+                                onChangeOrderItem,
+                                onDeleteOrderItem
+                            }: ProductsItemProps) => {
     const {title, price, image_url, description} = product
 
-    const handleDecreaseClick = (id: ID, quantity: number) => {
+    const handleDecreaseClick = (id: number, quantity: number) => {
         if (quantity < 1) return onDeleteOrderItem(id)
 
         onChangeOrderItem(id, quantity)

@@ -1,7 +1,7 @@
-import {ID, OrderItemData, ProductItem} from "@/api/types";
+import {ID, OrderItemData, ProductItemData} from "@/api/types";
 
 export interface ProductsItemProps {
-    product: ProductItem;
+    product: ProductItemData;
     orderItem: OrderItemData | null | undefined;
     onChangeOrderItem: (id: ID, quantity: number) => void;
     onAddOrderItem: (id: ID) => void;

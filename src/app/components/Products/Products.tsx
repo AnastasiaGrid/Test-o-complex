@@ -1,18 +1,8 @@
 import styles from "@/app/page.module.scss";
-import {ID, ProductsItem} from "@/app/components/Products/ProductsItem/ProductsItem";
-import {Order, OrderItemData} from "@/app/components/Basket/Basket";
 import {useCallback, useEffect, useState} from "react";
-import {ProductItem, ProductsData} from "@/api/types";
-
-type ProductsProps = {
-    products: ProductsData;
-    onChangeOrderItem: (id: ID, quantity: number) => void;
-    onAddOrderItem: (id: ID) => void;
-    onDeleteOrderItem: (id: ID) => void;
-    order: Order;
-    productsLoading: boolean;
-    getProducts: (page: number) => void;
-}
+import {OrderItemData, ProductItem,} from "@/api/types";
+import {ProductsProps} from "@/app/components/Products/types";
+import {ProductsItem} from "@/app/components/Products/ProductsItem/ProductsItem";
 
 export const Products = ({
                              products,

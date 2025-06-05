@@ -1,15 +1,14 @@
 'use client'
 import styles from "./page.module.scss";
 import {ReviewCard} from "@/app/components/ReviewCard/ReviewCard";
-import {Basket, Order} from "@/app/components/Basket/Basket";
+import {Basket} from "@/app/components/Basket/Basket";
 import {useEffect, useState} from "react";
-import {ID} from "@/app/components/Products/ProductsItem/ProductsItem";
 import {Preloader} from "@/app/components/Preloader/Preloader";
 import {Products} from "@/app/components/Products/Products";
 import {getProductsApi, getReviewsApi} from "@/api/api";
 import {initialProductsData, PAGE_SIZE} from "@/app/constants";
-import {getOrderFromLocalStorage} from "@/utils/utils";
-import {ProductsData, ReviewCardData} from "@/api/types";
+import {getOrderFromLocalStorage, setToLocalStorage} from "@/utils/utils";
+import {ID, Order, ProductsData, ReviewCardData} from "@/api/types";
 
 
 export default function Home() {
@@ -57,7 +56,7 @@ export default function Home() {
                 }));
                 return {...prev, cart: prev.cart.filter(item => item.id !== id)}
             }
-            localStorage.setItem('order', JSON.stringify({...prev, cart: newCart}));
+            setToLocalStorage('order', {...prev, cart: newCart});
             return {...prev, cart: newCart}
         })
 
@@ -65,7 +64,7 @@ export default function Home() {
 
     const onAddOrderItem = (id: ID) => {
         setOrder(prev => {
-            localStorage.setItem('order', JSON.stringify({...prev, cart: [...prev.cart, {id, quantity: 1}]}));
+            setToLocalStorage('order', {...prev, cart: [...prev.cart, {id, quantity: 1}]});
             return {...prev, cart: [...prev.cart, {id, quantity: 1}]}
         })
 
@@ -74,7 +73,7 @@ export default function Home() {
 
     const onDeleteOrderItem = (id: ID) => {
         setOrder(prev => {
-            localStorage.setItem('order', JSON.stringify({...prev, cart: prev.cart.filter(item => item.id !== id)}));
+            setToLocalStorage('order', {...prev, cart: prev.cart.filter(item => item.id !== id)});
             return {...prev, cart: prev.cart.filter(item => item.id !== id)}
         })
 
@@ -82,10 +81,9 @@ export default function Home() {
 
     const onChangePhone = (value: string) => {
         setOrder(prev => {
-
+            setToLocalStorage('order', {...prev, phone: value});
             return {...prev, phone: value}
         })
-        localStorage.setItem('order', JSON.stringify(order));
 
     }
 
@@ -98,7 +96,7 @@ export default function Home() {
                                                                              key={reviewCard.id}/>)}
             </ul>)}
             <><Basket onChangePhone={onChangePhone} order={order}
-                      products={products.items}/>
+                      products={products.items} onOrderClick={setOrder}/>
                 <Products products={products} onChangeOrderItem={onChangeOrderItem} onAddOrderItem={onAddOrderItem}
                           onDeleteOrderItem={onDeleteOrderItem} order={order} productsLoading={productsLoading}
                           getProducts={getProducts}/>

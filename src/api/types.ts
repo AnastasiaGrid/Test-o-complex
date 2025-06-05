@@ -2,6 +2,8 @@ export type ReviewCardData = {
     id: number;
     text: string;
 }
+export type ID = number
+
 export type ProductItem = {
     description: string,
     id: number,
@@ -15,4 +17,14 @@ export interface ProductsData {
     items: ProductItem[]
     page: number;
     total: number;
+}
+
+export interface Order {
+    phone: string,
+    cart: OrderItemData[]
+}
+
+export type OrderItemData = {
+    id: number,
+    quantity: number
 }

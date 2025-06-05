@@ -1,4 +1,4 @@
-import {Order} from "@/app/components/Basket/Basket";
+import {Order} from "@/api/types";
 
 export function getOrderFromLocalStorage(): Order {
     try {
@@ -8,6 +8,6 @@ export function getOrderFromLocalStorage(): Order {
     }
 }
 
-export function setToLocalStorage(key: string, value: string) {
-    localStorage.setItem(key, value);
+export function setToLocalStorage(key: string, value: Order) {
+    localStorage.setItem(key, JSON.stringify(value));
 }

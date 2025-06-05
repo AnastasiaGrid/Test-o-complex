@@ -1,6 +1,4 @@
-import {ProductsData} from "@/app/page";
-import {Order} from "@/app/components/Basket/Basket";
-import {ReviewCardData} from "@/api/types";
+import {Order, ProductsData, ReviewCardData} from "@/api/types";
 
 export const getProductsApi = (page: number, size: number): Promise<ProductsData> => fetch(`http://o-complex.com:1337/products?page=${page}&page_size=${size}`, {
     method: "GET",

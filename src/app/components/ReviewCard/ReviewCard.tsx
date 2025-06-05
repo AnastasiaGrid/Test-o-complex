@@ -1,18 +1,10 @@
 import styles from './ReviewCard.module.scss'
 import parse from 'html-react-parser';
+import {ReviewCardProps} from "@/app/components/ReviewCard/types";
 
-type ReviewCardData = {
-    id: number;
-    text: string;
-}
+export const ReviewCard = ({reviewContent}: ReviewCardProps) => {
 
-type ReviewCardProps = {
-    reviewContent: ReviewCardData;
-}
-
-export const ReviewCard =({reviewContent}: ReviewCardProps) => {
-
-    return(
+    return (
         <li className={styles.card}>
             {parse(reviewContent.text)}
         </li>

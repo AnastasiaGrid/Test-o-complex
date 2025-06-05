@@ -1,11 +1,5 @@
 import styles from "./OrderItem.module.scss";
-import {OrderItemData} from "@/app/components/Basket/Basket";
-import {ProductItem} from "@/api/types";
-
-interface OrderItemProps {
-    productItem: ProductItem;
-    orderItem: OrderItemData;
-}
+import {OrderItemProps} from "@/app/components/Basket/OrderItem/types";
 
 export const OrderItem = ({productItem, orderItem}: OrderItemProps) => {
     return (

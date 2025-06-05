@@ -2,32 +2,12 @@ import styles from './Basket.module.scss'
 import {Button} from "@/app/components/Button/Button";
 import {OrderItem} from "@/app/components/Basket/OrderItem/OrderItem";
 import {InputMask} from "@react-input/mask";
-import {ID} from "@/app/components/Products/ProductsItem/ProductsItem";
 import {postOrderApi} from "@/api/api";
-import {ProductItem} from "@/api/types";
+import {ID, OrderItemData, ProductItem} from "@/api/types";
+import {BasketProps} from "@/app/components/Basket/types";
+import {BASKET_TEXT} from "@/app/components/Basket/constants";
 
-const BASKET_TEXT = {
-    TITLE: 'Добавленные товары',
-    BUTTON_TEXT: 'ЗАКАЗАТЬ'
-}
-
-
-export interface Order {
-    phone: string,
-    cart: OrderItemData[]
-}
-
-export type OrderItemData = {
-    id: number,
-    quantity: number
-}
-
-type BasketProps = {
-    order: Order,
-    products: ProductItem[];
-    onChangePhone: (value: string) => void,
-}
-export const Basket = ({order, onChangePhone, products}: BasketProps) => {
+export const Basket = ({order, onChangePhone, products, onOrderClick}: BasketProps) => {
     const handleOrderClick = () => {
         postOrderApi(order)
             .then(res => {
@@ -36,6 +16,7 @@ export const Basket = ({order, onChangePhone, products}: BasketProps) => {
                 }
                 if (res.status === 200) {
                     alert('Заказ успешно оформлен!')
+                    onOrderClick({phone: '', cart: []})
                     localStorage.clear();
                 }
 
